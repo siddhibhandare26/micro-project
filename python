@@ -1,0 +1,201 @@
+patients = {}
+appointments = []
+bills = []
+
+patient_id_counter = 1001
+bill_id_counter = 5001
+
+
+def get_integer(prompt):
+    while True:
+        try:
+            value = int(input(prompt))
+            return value
+        except ValueError:
+            print("Please enter a valid number.")
+
+
+def add_patient():
+    global patient_id_counter
+
+    print("\n--- Add Patient Record ---")
+    name = input("Enter patient name: ").strip()
+    age = get_integer("Enter patient age: ")
+    gender = input("Enter patient gender: ").strip()
+    phone = input("Enter patient phone number: ").strip()
+
+    patient_id = patient_id_counter
+    patient_id_counter += 1
+
+    patients[patient_id] = {
+        "name": name,
+        "age": age,
+        "gender": gender,
+        "phone": phone
+    }
+
+    print(f"\nPatient added successfully!")
+    print(f"Patient ID: {patient_id}")
+
+
+def view_patients():
+    print("\n--- Patient Records ---")
+    if not patients:
+        print("No patient records found.")
+        return
+
+    for pid, info in patients.items():
+        print(f"\nPatient ID: {pid}")
+        print(f"Name      : {info['name']}")
+        print(f"Age       : {info['age']}")
+        print(f"Gender    : {info['gender']}")
+        print(f"Phone     : {info['phone']}")
+
+
+def schedule_appointment():
+    print("\n--- Schedule Doctor Appointment ---")
+    if not patients:
+        print("No patients available. Please add a patient first.")
+        return
+
+    patient_id = get_integer("Enter patient ID: ")
+
+    if patient_id not in patients:
+        print("Patient ID not found.")
+        return
+
+    doctor_name = input("Enter doctor name: ").strip()
+    appointment_date = input("Enter appointment date (DD-MM-YYYY): ").strip()
+    appointment_time = input("Enter appointment time (HH:MM): ").strip()
+    reason = input("Enter reason for visit: ").strip()
+
+    appointment = {
+        "patient_id": patient_id,
+        "patient_name": patients[patient_id]["name"],
+        "doctor_name": doctor_name,
+        "date": appointment_date,
+        "time": appointment_time,
+        "reason": reason
+    }
+
+    appointments.append(appointment)
+    print("\nAppointment scheduled successfully!")
+
+
+def view_appointments():
+    print("\n--- Appointment List ---")
+    if not appointments:
+        print("No appointments scheduled.")
+        return
+
+    for i, appt in enumerate(appointments, start=1):
+        print(f"\nAppointment {i}")
+        print(f"Patient ID   : {appt['patient_id']}")
+        print(f"Patient Name : {appt['patient_name']}")
+        print(f"Doctor Name  : {appt['doctor_name']}")
+        print(f"Date         : {appt['date']}")
+        print(f"Time         : {appt['time']}")
+        print(f"Reason       : {appt['reason']}")
+
+
+def generate_bill():
+    global bill_id_counter
+
+    print("\n--- Generate Billing ---")
+    if not patients:
+        print("No patients available. Please add a patient first.")
+        return
+
+    patient_id = get_integer("Enter patient ID: ")
+
+    if patient_id not in patients:
+        print("Patient ID not found.")
+        return
+
+    consultation_fee = float(input("Enter consultation fee: "))
+    test_charges = float(input("Enter test charges: "))
+    medicine_charges = float(input("Enter medicine charges: "))
+    discount = float(input("Enter discount amount: "))
+
+    total = consultation_fee + test_charges + medicine_charges - discount
+    if total < 0:
+        total = 0
+
+    bill = {
+        "bill_id": bill_id_counter,
+        "patient_id": patient_id,
+        "patient_name": patients[patient_id]["name"],
+        "consultation_fee": consultation_fee,
+        "test_charges": test_charges,
+        "medicine_charges": medicine_charges,
+        "discount": discount,
+        "total": total
+    }
+
+    bills.append(bill)
+    print("\nBill generated successfully!")
+    print(f"Bill ID: {bill_id_counter}")
+    bill_id_counter += 1
+
+    print("\n--- Bill Summary ---")
+    print(f"Patient Name      : {bill['patient_name']}")
+    print(f"Consultation Fee  : {consultation_fee}")
+    print(f"Test Charges      : {test_charges}")
+    print(f"Medicine Charges  : {medicine_charges}")
+    print(f"Discount          : {discount}")
+    print(f"Total Amount      : {total}")
+
+
+def view_bills():
+    print("\n--- Billing Records ---")
+    if not bills:
+        print("No bills generated.")
+        return
+
+    for bill in bills:
+        print(f"\nBill ID          : {bill['bill_id']}")
+        print(f"Patient ID       : {bill['patient_id']}")
+        print(f"Patient Name     : {bill['patient_name']}")
+        print(f"Consultation Fee : {bill['consultation_fee']}")
+        print(f"Test Charges     : {bill['test_charges']}")
+        print(f"Medicine Charges : {bill['medicine_charges']}")
+        print(f"Discount         : {bill['discount']}")
+        print(f"Total Amount     : {bill['total']}")
+
+
+def main():
+    while True:
+        print("\n==============================")
+        print(" HOSPITAL MANAGEMENT SYSTEM")
+        print("==============================")
+        print("1. Add Patient Record")
+        print("2. View Patient Records")
+        print("3. Schedule Doctor Appointment")
+        print("4. View Appointments")
+        print("5. Generate Billing")
+        print("6. View Bills")
+        print("7. Exit")
+        print("==============================")
+
+        choice = input("Enter your choice: ").strip()
+
+        if choice == "1":
+            add_patient()
+        elif choice == "2":
+            view_patients()
+        elif choice == "3":
+            schedule_appointment()
+        elif choice == "4":
+            view_appointments()
+        elif choice == "5":
+            generate_bill()
+        elif choice == "6":
+            view_bills()
+        elif choice == "7":
+            print("Exiting program. Thank you!")
+            break
+        else:
+            print("Invalid choice. Please enter a number from 1 to 7.")
+
+
+main()
